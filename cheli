@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+        <title>Flores Amarillas 🌻</title>
+        <meta name="theme-color" content="#0b0f1a" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <style>
+            :root {
+                --bg1: #0b0f1a;
+                --bg2: #141a2b;
+                --txt: #ffe97a;
+                --white: #eef6ff;
+                --accent: #ffd400;
+                --accent-mid: #ffb300;
+                --accent-end: #ff8900;
+                --stem: #2e8b57;
+                --leaf: #2fa36f;
+                --center: #4c2f25;
+                --glow: #ffdd55aa;
+                --safe-top: max(20px, env(safe-area-inset-top));
+                --safe-bottom: max(20px, env(safe-area-inset-bottom));
+                --safe-left: max(16px, env(safe-area-inset-left));
+                --safe-right: max(16px, env(safe-area-inset-right));
+            }
+            * {
+                box-sizing: border-box;
+                -webkit-tap-highlight-color: transparent;
+                -webkit-touch-callout: none;
+                user-select: none;
+            }
+            html {
+                height: 100%;
+                overflow: hidden;
+            }
+            body {
+                margin: 0;
+                font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, Arial, sans-serif;
+                color: var(--white);
+                background: radial-gradient(ellipse 800px 400px at 50% 0%, rgba(37, 18, 74, 0.8) 0%, transparent 70%),
+                    linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
+                height: 100vh;
+                height: 100svh;
+                overflow: hidden;
+                position: fixed;
+                width: 100%;
+            }
+
+            .stage {
+                position: relative;
+                width: 100vw;
+                height: 100vh;
+                height: 100svh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: space-between;
+                padding: var(--safe-top) var(--safe-left) var(--safe-bottom) var(--safe-right);
+                padding-top: max(var(--safe-top), 40px);
+                padding-bottom: max(var(--safe-bottom), 30px);
+                animation: stageIn 1s ease-out;
+            }
+            @keyframes stageIn {
+                from {
+                    opacity: 0;
+                    transform: scale(1.03);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+
+            .sky {
+                position: absolute;
+                inset: 0;
+                background: radial-gradient(2px 2px at 15% 25%, rgba(255, 255, 255, 0.6), transparent 50%),
+                    radial-gradient(1.5px 1.5px at 45% 15%, rgba(255, 255, 255, 0.4), transparent 50%),
+                    radial-gradient(1px 1px at 75% 40%, rgba(255, 255, 255, 0.7), transparent 50%),
+                    radial-gradient(1.5px 1.5px at 25% 70%, rgba(255, 255, 255, 0.3), transparent 50%),
+                    radial-gradient(2px 2px at 85% 80%, rgba(255, 255, 255, 0.5), transparent 50%),
+                    radial-gradient(1px 1px at 90% 20%, rgba(255, 255, 255, 0.6), transparent 50%);
+                opacity: 0.8;
+                animation: sparkle 4s ease-in-out infinite alternate;
+            }
+            @keyframes sparkle {
+                0% {
+                    opacity: 0.6;
+                }
+                100% {
+                    opacity: 1;
+                }
+            }
+
+            .message {
+                color: var(--txt);
+                text-shadow: 0 0 20px var(--glow), 0 2px 4px rgba(0, 0, 0, 0.3);
+                font-weight: 800;
+                letter-spacing: 0.5px;
+                font-size: clamp(20px, 5.5vw, 28px);
+                text-align: center;
+                opacity: 0;
+                transform: translateY(-20px) scale(0.9);
+                transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 2;
+                margin-bottom: 8px;
+            }
+            .message.show {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            /* Contenedor central de la flor */
+            .bouquet {
+                position: relative;
+                width: min(88vw, 420px);
+                height: min(88vw, 420px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1;
+                filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4));
+            }
+            .group {
+                position: absolute;
+                left: 50%;
+                bottom: 50%;
+                height: 90%;
+                width: 0;
+                transform-origin: bottom center;
+            }
+
+            /* Tallo: crece primero y luego se mece */
+            .stem {
+                position: absolute;
+                left: 50%;
+                bottom: 0;
+                width: 5px;
+                height: 72%;
+                background: linear-gradient(180deg, #1f6d45, var(--stem), #1a5a3a);
+                border-radius: 5px;
+                box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.1), inset -1px 0 0 rgba(0, 0, 0, 0.25);
+                transform: translateX(-50%) rotate(0deg) scaleY(0);
+                animation: grow 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards 0s, stemSway 4s ease-in-out infinite 1.1s;
+            }
+            @keyframes grow {
+                0% {
+                    transform: translateX(-50%) rotate(0deg) scaleY(0);
+                }
+                100% {
+                    transform: translateX(-50%) rotate(0deg) scaleY(1);
+                }
+            }
+            @keyframes stemSway {
+                0% {
+                    transform: translateX(-50%) rotate(-1deg) scaleY(1);
+                }
+                50% {
+                    transform: translateX(-50%) rotate(1deg) scaleY(1);
+                }
+                100% {
+                    transform: translateX(-50%) rotate(-1deg) scaleY(1);
+                }
+            }
+
+            /* Hojas */
+            .leaf {
+                position: absolute;
+                width: 72px;
+                height: 42px;
+                background: radial-gradient(ellipse at 20% 40%, #4dd699, var(--leaf) 50%, #1d6e46 100%);
+                border-radius: 80px 80px 80px 28px;
+                filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25));
+                opacity: 0;
+                transform: scale(0.8) rotate(-10deg);
+                animation: leafGrow 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards 0.35s;
+            }
+            .leaf.right {
+                transform: scaleX(-1) scale(0.8) rotate(-10deg);
+                animation-delay: 0.45s;
+            }
+            @keyframes leafGrow {
+                0% {
+                    opacity: 0;
+                    transform: scale(0.8) rotate(-10deg);
+                }
+                100% {
+                    opacity: 1;
+                    transform: scale(1) rotate(0);
+                }
+            }
+
+            /* Flor grande (cabeza): florece después del tallo y se mece siempre */
+            .flower {
+                position: absolute;
+                justify-content: center;
+                left: 50%;
+                bottom: var(--h, 72%); /* altura relativa al tallo */
+                width: clamp(160px, 42vw, 230px);
+                height: clamp(160px, 42vw, 230px);
+                transform-origin: center bottom;
+                opacity: 0;
+                animation: bloom 1.1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.35s,
+                    sway 4s ease-in-out infinite 1.46s;
+                filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35));
+            }
+            @keyframes bloom {
+                0% {
+                    transform: translate(-50%, 22px) rotate(-2deg) scale(0);
+                    opacity: 0;
+                }
+                60% {
+                    transform: translate(-50%, -6px) rotate(2deg) scale(1.08);
+                }
+                100% {
+                    transform: translate(-50%, 0) rotate(0deg) scale(1);
+                    opacity: 1;
+                }
+            }
+            @keyframes sway {
+                0% {
+                    transform: translate(-50%, 0) rotate(-1.2deg);
+                }
+                50% {
+                    transform: translate(-50%, -5px) rotate(1.2deg);
+                }
+                100% {
+                    transform: translate(-50%, 0) rotate(-1.2deg);
+                }
+            }
+
+            /* Centro y pétalos */
+            .disc {
+                position: absolute;
+                left: 30%;
+                top: 50%;
+                transform: translate(-50%, -50%); /* 🔑 centra en el flower */
+                z-index: 5;
+                width: clamp(64px, 18vw, 86px);
+                height: clamp(64px, 18vw, 86px);
+                border-radius: 50%;
+                background: radial-gradient(circle at 35% 30%, #8b4a3d, var(--center) 55%, #2a1712 100%);
+                box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.08),
+                    0 0 0 3px rgba(0, 0, 0, 0.22);
+            }
+            .petal {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform-origin: 0 50%;
+                width: clamp(58px, 16vw, 78px);
+                height: clamp(18px, 5vw, 24px);
+                background: linear-gradient(90deg, var(--accent) 0%, var(--accent-mid) 60%, var(--accent-end) 100%);
+                border-radius: 22px 70px 70px 22px;
+                box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.28), inset 0 -1px 2px rgba(0, 0, 0, 0.25),
+                    0 2px 6px rgba(0, 0, 0, 0.18);
+                animation: petalGlow 3s ease-in-out infinite alternate;
+            }
+            @keyframes petalGlow {
+                0% {
+                    filter: brightness(1);
+                }
+                100% {
+                    filter: brightness(1.08);
+                }
+            }
+
+            /* Chispitas */
+            .spark {
+                position: absolute;
+                width: 10px;
+                height: 10px;
+                bottom: 50%;
+                border-radius: 50%;
+                background: radial-gradient(circle at 35% 35%, #fff8c8, #ffd633 55%, #e0a800 100%);
+                filter: blur(0.3px);
+                opacity: 0.9;
+                animation: floatUp linear forwards;
+            }
+            @keyframes floatUp {
+                from {
+                    transform: translate(var(--sx), var(--sy)) scale(0.9);
+                    opacity: 0.95;
+                }
+                to {
+                    transform: translate(calc(var(--sx)+var(--dx)), calc(var(--sy) - var(--dy))) scale(0);
+                    opacity: 0;
+                }
+            }
+
+            .actions {
+                position: fixed;
+                left: 50%;
+                bottom: var(--safe-bottom);
+                transform: translateX(-50%);
+                display: flex;
+                gap: 10px;
+                z-index: 10;
+            }
+            .btn {
+                background: rgba(16, 21, 39, 0.9);
+                border: 1px solid #2a3350;
+                color: #dfe6ff;
+                border-radius: 16px;
+                padding: 12px 18px;
+                font-weight: 700;
+                font-size: 15px;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+            }
+            .btn:active {
+                transform: scale(0.97);
+            }
+            @media (max-height: 700px) {
+                .bouquet {
+                    width: min(78vw, 360px);
+                    height: min(78vw, 360px);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="stage" id="app">
+            <div class="sky" aria-hidden="true"></div>
+
+            <div class="message" id="msg">Vi el código de esta flor y pensé en ti porque es bonita...💛</div>
+
+            <div class="bouquet" id="bouquet" aria-label="Flor amarilla"></div>
+
+            <div class="actions">
+                <button class="btn" id="replay" disabled>Repetir ✨</button>
+            </div>
+
+            <div
+                class="gate"
+                id="gate"
+                role="button"
+                aria-label="Toca para ver tu flor"
+                style="
+                    position: fixed;
+                    inset: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: rgba(0, 0, 0, 0.55);
+                    backdrop-filter: blur(10px);
+                    -webkit-backdrop-filter: blur(10px);
+                    z-index: 20;
+                    cursor: pointer;
+                "
+            >
+                <div
+                    style="
+                        width: 88vw;
+                        max-width: 380px;
+                        text-align: center;
+                        padding: 26px 22px;
+                        background: rgba(16, 21, 39, 0.9);
+                        border: 1px solid #2a3350;
+                        border-radius: 22px;
+                        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+                    "
+                >
+                    <h2 style="margin: 0 0 10px; color: var(--txt); text-shadow: 0 0 15px var(--glow)">
+                        21 de Septiembre 🌻
+                    </h2>
+                    <p style="margin: 0 0 16px; opacity: 0.9">Toca la pantalla para ver tu sorpresa especial ✨</p>
+                    <div
+                        style="
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 10px;
+                            padding: 12px 18px;
+                            border: 1px solid #2a3350;
+                            border-radius: 14px;
+                            background: #0d1324;
+                        "
+                    >
+                        Toca aquí
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <audio id="bgm" preload="auto" loop>
+            <source src="music.mp3" type="audio/mpeg" />
+            <source src="music.ogg" type="audio/ogg" />
+        </audio>
+
+        <script>
+            const el = (t, c) => {
+                const e = document.createElement(t);
+                if (c) e.className = c;
+                return e;
+            };
+            const $ = id => document.getElementById(id);
+
+            const gate = $('gate'),
+                bouquet = $('bouquet'),
+                msg = $('msg');
+            const replayBtn = $('replay'),
+                muteBtn = $('mute'),
+                audio = $('bgm');
+            let revealed = false,
+                muted = false;
+
+            function sparks(x, y, count = 12) {
+                for (let i = 0; i < count; i++) {
+                    const s = el('div', 'spark');
+                    s.style.left = x + 'px';
+                    s.style.top = y + 'px';
+                    s.style.setProperty('--sx', Math.random() * 12 - 6 + 'px');
+                    s.style.setProperty('--sy', Math.random() * 12 - 6 + 'px');
+                    s.style.setProperty('--dx', Math.random() * 80 - 40 + 'px');
+                    s.style.setProperty('--dy', 70 + Math.random() * 110 + 'px');
+                    s.style.animationDuration = 1.4 + Math.random() * 0.6 + 's';
+                    bouquet.appendChild(s);
+                    setTimeout(() => s.remove(), 2300);
+                }
+            }
+
+            // Crea una única flor grande centrada
+            function renderSingleFlower() {
+                bouquet.innerHTML = '';
+
+                const group = el('div', 'group');
+
+                // Tallo
+                const stem = el('div', 'stem');
+                group.appendChild(stem);
+
+                // Hojas (dos)
+                const leafL = el('div', 'leaf');
+                leafL.style.left = '-54px';
+                leafL.style.bottom = '34%';
+                const leafR = el('div', 'leaf right');
+                leafR.style.right = '-54px';
+                leafR.style.bottom = '48%';
+                group.append(leafL, leafR);
+
+                // Cabeza de la flor
+                const flower = el('div', 'flower');
+
+                // Pétalos (24) más largos
+                const petalCount = 24,
+                    step = 360 / petalCount,
+                    radius = 34; // translateX
+                for (let i = 0; i < petalCount; i++) {
+                    const p = el('div', 'petal');
+                    p.style.transform = `translate(-50%,-50%) rotate(${i * step}deg) translateX(${radius}px)`;
+                    flower.appendChild(p);
+                }
+
+                // Centro
+                const disc = el('div', 'disc');
+                flower.appendChild(disc);
+
+                group.appendChild(flower);
+                bouquet.appendChild(group);
+
+                // Chispas suaves al florecer
+                setTimeout(() => {
+                    const rect = bouquet.getBoundingClientRect();
+                    sparks(rect.width / 2, rect.height * 0.32, 14);
+                }, 650);
+            }
+
+            async function reveal() {
+                if (revealed) return;
+                revealed = true;
+                gate.style.opacity = '0';
+                gate.style.pointerEvents = 'none';
+
+                setTimeout(() => msg.classList.add('show'), 200);
+                setTimeout(() => renderSingleFlower(), 350);
+                setTimeout(() => {
+                    replayBtn.disabled = false;
+                }, 1200);
+
+                try {
+                    await audio.play();
+                    muted = false;
+                    updateMuteBtn();
+                } catch {
+                    muted = true;
+                    audio.muted = true;
+                    updateMuteBtn();
+                }
+            }
+
+            function replay() {
+                if (!revealed) return;
+                msg.classList.remove('show');
+                bouquet.style.opacity = '.0';
+                setTimeout(() => {
+                    msg.classList.add('show');
+                    bouquet.style.opacity = '1';
+                    renderSingleFlower();
+                    if (!muted) {
+                        audio.currentTime = 0;
+                        audio.play().catch(() => {});
+                    }
+                }, 220);
+            }
+
+            function toggleMute() {
+                muted = !muted;
+                audio.muted = muted;
+                if (!muted) {
+                    audio.play().catch(() => {});
+                } else {
+                    audio.pause();
+                }
+                updateMuteBtn();
+            }
+            function updateMuteBtn() {
+                muteBtn.textContent = muted ? 'Activar 🔊' : 'Silenciar 🔈';
+            }
+
+            gate.addEventListener('click', reveal);
+            gate.addEventListener('touchend', e => {
+                e.preventDefault();
+                reveal();
+            });
+            replayBtn.addEventListener('click', replay);
+            muteBtn.addEventListener('click', toggleMute);
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    audio.pause();
+                } else if (revealed && !muted) {
+                    audio.play().catch(() => {});
+                }
+            });
+            document.addEventListener('DOMContentLoaded', () => {
+                if (audio.canPlayType) audio.load();
+            });
+        </script>
+    </body>
+</html>
